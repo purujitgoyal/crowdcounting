@@ -13,7 +13,7 @@ from skimage import color
 from torchvision import transforms
 from scipy import ndimage
 
-def showimage(root,image_name):
+def processimage(root,image_name):
 	img_name = os.path.join(root,image_name)
 	image = io.imread(img_name)
 	pil_image = Image.fromarray(image)
@@ -21,24 +21,81 @@ def showimage(root,image_name):
 	# pil_image.show()
 	return np.array(pil_image)
 
-image = showimage('../Data/TRANCOS_v3/images','image-1-000039dots.png')
-# count = 0
-# for i in range(0,480):
-# 	for j in range(0,640):
-# 		if(image[i][j][0]!=0):
-# 			count+=1
-# 			print(image[i][j])
-# print(count)
+image = processimage('../Data/TRANCOS_v3/images','image-1-000001dots.png')
+# print(image.shape)
 
-def image_processing(image):
+def image_gaussian(image):
 	# image = Image.fromarray(image)
 	# image.show()
 	image = image[:,:,0]
-	img = ndimage.gaussian_filter(image, sigma=(4,4), order=0)
+	img = ndimage.gaussian_filter(image, sigma=(4,4))
 	# plt.imshow(img, interpolation='nearest')
 	# plt.show()
 	return img
 
-gdImage = image_processing(image)
-# plt.imshow(gdImage)
+gdImage = image_gaussian(image)
+# count = 0
+# for i in range(0,480):
+# 	for j in range(0,640):
+# 		if(image[i][j][0]==255):
+# 			count+=1
+# print(count)
+
+def gdgenerator(image): 
+	h,w = image.shape
+	gdarray = np.zeros((h,w))
+	maxi_array = []
+	count = 0
+	# print(gdarray.size)
+	maxi = 0
+	for i in range(0,h):
+		for j in range(0,w):
+			gdarray[i][j] = image[i][j]
+			if(gdarray[i][j]>maxi):
+				maxi = gdarray[i][j]
+				maxi_array.append(gdarray[i][j])
+			if(gdarray[i][j]!=0):
+				count+=1
+	# print(set(maxi_array))
+	# print(count)
+
+gdgenerator(gdImage)
+
+def imagewithborder(root,image_name):
+	img_name = os.path.join(root,image_name)
+	image = io.imread(img_name)
+	pil_image = Image.fromarray(image)
+	img_with_border = ImageOps.expand(pil_image,border=32,fill='black')
+	# img_with_border.show()
+	return np.array(img_with_border)
+
+borderimage = imagewithborder('../Data/TRANCOS_v3/images','image-1-000001dots.png')
+borderimageonechannel = borderimage[:,:,0]
+# plt.imshow(borderimageonechannel)
 # plt.show()
+count_patch = np.zeros((480,640))
+def auxilarytask(image,output_size=65):
+	h,w = image.shape
+	new_h,new_w = output_size,output_size
+	# print(h,w)
+	for i in range(0,480):
+		for j in range(0,640):
+			patch = image[i: i + new_h,j: j + new_w]
+			# print(patch.shape)
+			count_class = 0
+			patch_h,patch_w = patch.shape
+			for k in range(0,patch_h):
+				for l in range(0,patch_w):
+					if(patch[k][l]!=0):
+						count_class+=1
+			count_patch[i][j] = count_class
+	# print(count_patch)
+
+import re
+
+auxilarytask(borderimageonechannel)
+f = open('count.txt','w')
+lines = str1 = ''.join(str(e) for e in np.ndarray.tolist(count_patch))
+# print(lines)
+f.write(lines)
+print('Done')

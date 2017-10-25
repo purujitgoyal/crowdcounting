@@ -30,7 +30,7 @@ image = showimage('../Data/TRANCOS_v3/trial','image-1-000001.jpg')
 class Net(nn.Module):
 	def __init__(self):
 		super(Net,self).__init__()
-		self.conv1 = nn.Conv2d(3,64,5)
+		self.conv1 = nn.Conv2d(1,64,5)
 		self.conv2 = nn.Conv2d(64, 64, 5)
 		self.conv3 = nn.Conv2d(64, 64, 5)
 
@@ -129,12 +129,12 @@ for i in range(0,480):
 	for j in range(0,640):
 		# print(patch_array[i][j].shape)
 		patch_tensor = torch.from_numpy(patch_array[i][j])
-		print(patch_tensor.size())
+		# print(patch_tensor.size())
 		patch_loader = patch_tensor.unsqueeze(0).unsqueeze(0)
-		print((patch_loader.size()))
-		density = net(Variable(patch_loader))
-		print(density)
-
+		# print(patch_loader)
+		density = net(Variable(patch_loader).type(torch.FloatTensor))
+		# print(density)
+print('Done')
 # patch_gray = color.rgb2gray(patch)
 # plt.imshow(patch_gray)
 # plt.pause(3)
