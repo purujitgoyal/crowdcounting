@@ -11,6 +11,7 @@ from skimage import io,transform
 import torch.nn.functional as F
 from skimage import color
 from torchvision import transforms
+from groundtruth import *
 
 def showimage(root,image_name):
 	img_name = os.path.join(root,image_name)
@@ -40,10 +41,7 @@ class Net(nn.Module):
 
 	def forward(self, x):
 		x = F.relu(self.conv1(x))
-		# print(x.size())
-		# x = LRN(x, ACROSS_CHANNELS=True)
 		x = F.max_pool2d(x,2, stride=2)
-		# print(x.size())
 		x = F.relu(self.conv2(x))
 		# print(x.size())
 		# x = LRN(x, ACROSS_CHANNELS=True)
