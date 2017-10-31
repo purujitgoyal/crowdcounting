@@ -21,8 +21,8 @@ def imagewithborder(root,image_name):
 	# img_with_border.show()
 	return np.array(img_with_border)
 
-borderimage = imagewithborder('../Data/TRANCOS_v3/images','image-1-000001dots.png')
-borderimageonechannel = borderimage[:,:,0]
+# borderimage = imagewithborder('../Data/TRANCOS_v3/images','image-1-000001dots.png')
+# borderimageonechannel = borderimage[:,:,0]
 # plt.imshow(borderimageonechannel)
 # plt.show()
 count_patch = np.zeros((480,640))
@@ -30,8 +30,8 @@ def auxilarytask(image,output_size=65):
 	h,w = image.shape
 	new_h,new_w = output_size,output_size
 	# print(h,w)
-	for i in range(0,480):
-		for j in range(0,640):
+	for i in range(0,1):
+		for j in range(0,1):
 			patch = image[i: i + new_h,j: j + new_w]
 			# print(patch.shape)
 			count_class = 0
@@ -41,8 +41,8 @@ def auxilarytask(image,output_size=65):
 					if(patch[k][l]!=0):
 						count_class+=1
 			count_patch[i][j] = count_class
+
+	return count_patch
 	# print(count_patch)
 
-import re
-
-auxilarytask(borderimageonechannel)
+# auxilarytask(borderimageonechannel)s

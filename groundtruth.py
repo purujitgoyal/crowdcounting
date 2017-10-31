@@ -21,19 +21,15 @@ def processimage(root,image_name):
 	# pil_image.show()
 	return np.array(pil_image)
 
-image = processimage('../Data/TRANCOS_v3/images','image-1-000001dots.png')
+# image = processimage('../Data/TRANCOS_v3/images','image-1-000001dots.png')
 # print(image.shape)
 
 def image_gaussian(image):
-	# image = Image.fromarray(image)
-	# image.show()
 	image = image[:,:,0]
 	img = ndimage.gaussian_filter(image, sigma=(4,4))
 	# plt.imshow(img, interpolation='nearest')
 	# plt.show()
 	return img
-
-gdImage = image_gaussian(image)
 
 def gdgenerator(image): 
 	h,w = image.shape
@@ -46,6 +42,4 @@ def gdgenerator(image):
 	for i in range(0,h):
 		for j in range(0,w):
 			gdarray[i][j] = image[i][j]
-	print(gdarray.shape)
-
-gdgenerator(gdImage)
+	return gdarray
