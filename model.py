@@ -146,7 +146,7 @@ def auxillary_task(borderimage):
 # total_loss = torch.from_numpy(total_loss_np.reshape(1)).type(torch.FloatTensor)
 # print(total_loss)
 
-def train_image(image, gdimage, border_dot_image):
+def train_image(image, gdimage, border_dot_image, net):
 	patch = training_patch(image)
 	patch_array = np.array(patch)
 	patch_array = patch_array.reshape(480,640,65,65)
@@ -161,6 +161,8 @@ def train_image(image, gdimage, border_dot_image):
 		for j in range(0,1):
 			patch_tensor = torch.from_numpy(patch_array[i][j]).type(torch.FloatTensor)
 			patch_loader = patch_tensor.unsqueeze(0).unsqueeze(0)
+			if torch.cuda.is_available():
+				patch_loader = patch_loader.cuda()
 			print(patch_loader.size())
 			patch_list.append(patch_loader)
 	patch_variable = np.array(patch_list)
@@ -203,8 +205,10 @@ def train_image(image, gdimage, border_dot_image):
 	print(number_class.exp())
 	print(density_nn[0][0])
 
-image, gdimage, border_dot_image = load_image('../Data/TRANCOS_v3/images','image-1-000001.jpg', 'image-1-000001dots.png')
+image, gdimage, border_dot_image = load_image('./data/','image1.jpg', 'image1_dots.png')
 net = Net()
+if torch.cuda.is_available():
+	net = nte.cuda()
 optimizer = torch.optim.Adam(net.parameters(), lr=1e-3)
 
-train_image(image, gdimage, border_dot_image)
+train_image(image, gdimage, border_dot_image, net)
